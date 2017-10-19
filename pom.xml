@@ -2,13 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.asgc.framework.configure</groupId>
+  <groupId>com.github.aoshiguchen.framework</groupId>
   <artifactId>asgc-configure</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>jar</packaging>
 
   <name>asgc-configure</name>
-  <url>http://maven.apache.org</url>
+  <description>this is a java config load util.</description>
+  <url>https://github.com/aoshiguchen/asgc-configure</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,17 +29,130 @@
     </dependency>
   </dependencies>
   
-  <build>  
-        <plugins>  
-            <plugin>  
-                <groupId>org.apache.maven.plugins</groupId>  
-                <artifactId>maven-compiler-plugin</artifactId>  
-                <version>3.1</version>  
-                <configuration>  
-                    <source>1.8</source>  
-                    <target>1.8</target>  
-                </configuration>  
-            </plugin>  
-        </plugins>  
-    </build>
+  <profiles>
+  	<profile>
+  		<id>release</id>
+  		<build>  
+	        <plugins>  
+	        	<plugin>
+	               <groupId>org.sonatype.plugins</groupId>
+	               <artifactId>nexus-staging-maven-plugin</artifactId>
+	               <version>1.6.3</version>
+	               <extensions>true</extensions>
+	               <configuration>
+	                 <serverId>ultimate</serverId>
+	                 <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+	                 <autoReleaseAfterClose>true</autoReleaseAfterClose>
+	               </configuration>
+	             </plugin>
+	            <plugin>  
+	                <groupId>org.apache.maven.plugins</groupId>  
+	                <artifactId>maven-compiler-plugin</artifactId>  
+	                <version>3.1</version>  
+	                <configuration>  
+	                    <source>1.8</source>  
+	                   <target>1.8</target>
+	                </configuration>  
+	            </plugin>  
+	            <plugin>
+	                 <groupId>org.apache.maven.plugins</groupId>
+	                 <artifactId>maven-release-plugin</artifactId>
+	                 <version>2.5</version>
+	                 <configuration>
+	                   <autoVersionSubmodules>true</autoVersionSubmodules>
+	                   <useReleaseProfile>false</useReleaseProfile>
+	                   <releaseProfiles>release</releaseProfiles>
+	                   <goals>deploy</goals>
+	                 </configuration>
+	            </plugin>
+	            <plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
+			      <artifactId>maven-source-plugin</artifactId>
+			      <version>2.2.1</version>
+			      <executions>
+			        <execution>
+			          <id>attach-sources</id>
+			          <goals>
+			            <goal>jar-no-fork</goal>
+			          </goals>
+			        </execution>
+			      </executions>
+			    </plugin>
+			    <plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
+			      <artifactId>maven-javadoc-plugin</artifactId>
+			      <version>2.9.1</version>
+			      <executions>
+			        <execution>
+			          <id>attach-javadocs</id>
+			          <goals>
+			            <goal>jar</goal>
+			          </goals>
+			        </execution>
+			      </executions>
+			    </plugin>
+			    <plugin>
+			      <groupId>org.apache.maven.plugins</groupId>
+			      <artifactId>maven-gpg-plugin</artifactId>
+			      <version>1.5</version>
+			      <executions>
+			        <execution>
+			          <id>sign-artifacts</id>
+			          <phase>verify</phase>
+			          <goals>
+			            <goal>sign</goal>
+			          </goals>
+			        </execution>
+			      </executions>
+			    </plugin>
+	        </plugins>  
+	    </build>
+  	</profile>
+  </profiles>
+  
+  <issueManagement>
+		<system>Github Issue</system>
+		<url>https://github.com/aoshiguchen/asgc-configure/issues</url>
+	</issueManagement>
+  <distributionManagement>
+	  <snapshotRepository>
+	    <id>ultimate</id>
+	    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+	  </snapshotRepository>
+	  <repository>
+	    <id>ultimate</id>
+	    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+	  </repository>
+	</distributionManagement>
+    
+    <parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
+    <scm>
+	     <connection>
+	        scm:git:https://github.com/aoshiguchen/asgc-configure.git
+	     </connection>
+	     <developerConnection>
+	        scm:git:https://github.com/aoshiguchen/asgc-configure.git
+	     </developerConnection>
+	     <url>https://github.com/aoshiguchen/asgc-configure</url>
+	    <tag>v0.0.1</tag>
+	 </scm>
+    <developers>
+	   <developer>
+	     <name>aoshiguchen</name>
+	     <email>1052045476@qq.com</email>
+	     <organization>asgc-configure</organization>
+	     <organizationUrl>https://github.com/aoshiguchen/asgc-configure</organizationUrl>
+	   </developer>
+	 </developers>
+    <licenses>
+     <license>
+       <name>The Apache License, Version 2.0</name>
+       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+     </license>
+   </licenses>
 </project>
