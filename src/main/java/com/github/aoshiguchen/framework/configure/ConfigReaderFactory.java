@@ -85,7 +85,12 @@ public class ConfigReaderFactory {
 				logger.info("scanf path :" + classRootPath + path);
 				configure = configReader.readAll(classRootPath + path);
 			}catch(Exception e2){
-				throw new ConfigReaderException(path + "is not exists !");
+				try{
+					String resourcePath = ConfigReaderFactory.class.getResource("/").getPath();
+					configure = configReader.readAll(resourcePath + path);
+				}catch(Exception e3){
+					throw new ConfigReaderException(path + "is not exists !");
+				}
 			}
 		}
 		
