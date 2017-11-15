@@ -4,7 +4,7 @@
 
   <groupId>com.github.aoshiguchen.framework</groupId>
   <artifactId>asgc-configure</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <packaging>jar</packaging>
 
   <name>asgc-configure</name>
@@ -148,7 +148,7 @@
 	        scm:git:https://github.com/aoshiguchen/asgc-configure.git
 	     </developerConnection>
 	     <url>https://github.com/aoshiguchen/asgc-configure</url>
-	    <tag>v0.0.1</tag>
+	    <tag>v0.0.2</tag>
 	 </scm>
     <developers>
 	   <developer>
