@@ -46,4 +46,9 @@ public class ConfigUtil {
 		
 	}
 	
+	public static void inject(String path,Object obj){
+		inject(ConfigReaderFactory.getConfigure(path), obj);
+	}
+	
+	
 }

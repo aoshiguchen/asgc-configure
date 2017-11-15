@@ -1,12 +1,21 @@
 package com.github.aoshiguchen.framework.configure;
 
 
+import static com.github.aoshiguchen.framework.configure.StringUtil.getSuffix;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.log4j.Logger;
 
 import com.github.aoshiguchen.framework.configure.ex.ConfigReaderException;
-import com.github.aoshiguchen.framework.configure.impl.*;
-
-import static com.github.aoshiguchen.framework.configure.StringUtil.getSuffix;
+import com.github.aoshiguchen.framework.configure.impl.IniConfigReaderImpl;
+import com.github.aoshiguchen.framework.configure.impl.JsonConfigReaderImpl;
+import com.github.aoshiguchen.framework.configure.impl.PropConfigReaderImpl;
+import com.github.aoshiguchen.framework.configure.impl.TxtConfigReaderImpl;
+import com.github.aoshiguchen.framework.configure.impl.XmlConfigReaderImpl;
 
 /**
  * ConfigReader工厂
@@ -23,6 +32,8 @@ public class ConfigReaderFactory {
 		private static final IConfigReader txtConfigReader = new TxtConfigReaderImpl();
 		private static final IConfigReader xmlConfigReader = new XmlConfigReaderImpl();
 	}
+	
+	private static final Map<String,Configure> cache = new ConcurrentHashMap<String, Configure>();
 	
 	public static IConfigReader getIniConfigReader(){
 		
@@ -76,25 +87,38 @@ public class ConfigReaderFactory {
 			configReader = getPropConfigReader();
 		}
 		
-		try{
-			logger.info("scanf path :" + path);
-			configure = configReader.readAll(path);
-		}catch(Exception e1){
-			try{
-				String classRootPath = ConfigReaderFactory.class.getClassLoader().getResource("").getPath();
-				logger.info("scanf path :" + classRootPath + path);
-				configure = configReader.readAll(classRootPath + path);
-			}catch(Exception e2){
-				try{
-					String resourcePath = ConfigReaderFactory.class.getResource("/").getPath();
-					configure = configReader.readAll(resourcePath + path);
-				}catch(Exception e3){
-					throw new ConfigReaderException(path + "is not exists !");
-				}
+		List<String> pathList = new ArrayList<String>(){
+			{
+				this.add(path);
+				this.add(ConfigReaderFactory.class.getClassLoader().getResource("").getPath() + path);
+				this.add(ConfigReaderFactory.class.getResource("/").getPath() + path);
+				this.add(path + ".properties");
+				this.add(ConfigReaderFactory.class.getClassLoader().getResource("").getPath() + path + ".properties");
+				this.add(ConfigReaderFactory.class.getResource("/").getPath() + path + ".properties");
+			}
+		};
+		
+		for(String p : pathList){
+			configure = readAll(configReader, p);
+			if(null != configure){
+				break;
 			}
 		}
 		
+		if(null == configure){
+			throw new ConfigReaderException(path + "is not exists !");
+		}
+		
 		return configure;
+	}
+	
+	private static Configure readAll(IConfigReader configReader,String path){
+		try{			
+			logger.info("scanf path :" + path);
+			return configReader.readAll(path);
+		}catch(Exception e){
+			return null;
+		}
 	}
 	
 	/**
@@ -108,6 +132,10 @@ public class ConfigReaderFactory {
 	public static  Configure getConfigure(String path){
 		
 		logger.info("getConfigure:" + path);
+		
+		if(cache.containsKey(path)){
+			return cache.get(path);
+		}
 			
 		String suffix = getSuffix(path);
 		String type = "";
@@ -125,8 +153,11 @@ public class ConfigReaderFactory {
 		}else{
 			type = "properties";
 		}
-			
-		return getConfigure(path, type);
+		
+		Configure configure = getConfigure(path, type);
+		cache.put(path, configure);
+		
+		return configure;
 	}
 	
 }
