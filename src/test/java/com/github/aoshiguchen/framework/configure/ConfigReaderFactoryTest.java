@@ -19,9 +19,9 @@ public class ConfigReaderFactoryTest {
 	@Test
 	public void test2(){
 		
-		Configure configure = ConfigReaderFactory.getConfigure("config.properties");
+		Configure configure = ConfigReaderFactory.getConfigure("config");
 		
-		System.out.println(configure);
+		System.out.println(configure.getString("jdbc.url"));
 		
 	}
 	
